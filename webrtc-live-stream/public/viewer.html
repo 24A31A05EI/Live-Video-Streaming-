@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch Live - Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #0a0a0a;
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: #1a1a1a;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .video-player {
+            background: #1a1a1a;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #333;
+        }
+        
+        .video-container {
+            position: relative;
+            background: #000;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        video {
+            width: 100%;
+            height: auto;
+            max-height: 600px;
+            display: block;
+        }
+        
+        .video-overlay {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            right: 1rem;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+        
+        .live-badge {
+            background: #ff4444;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .live-indicator {
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .viewer-count {
+            background: rgba(0,0,0,0.7);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .stream-info {
+            padding: 1.5rem;
+            border-top: 1px solid #333;
+        }
+        
+        .stream-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .streamer-name {
+            color: #888;
+            margin-bottom: 1rem;
+        }
+        
+        .status-message {
+            padding: 2rem;
+            text-align: center;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .status-message.waiting {
+            background: rgba(33, 150, 243, 0.1);
+            color: #2196F3;
+        }
+        
+        .status-message.success {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+        }
+        
+        .status-message.error {
+            background: rgba(255, 68, 68, 0.1);
+            color: #ff4444;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+        
+        button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #45a049;
+        }
+        
+        .quality-selector {
+            background: #333;
+            color: white;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .stats {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #1a1a1a;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #888;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-label {
+            color: #666;
+            margin-bottom: 0.3rem;
+        }
+        
+        .stat-value {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">📹 LiveStream Pro</div>
+        <div>Watching</div>
+    </div>
+    
+    <div class="container">
+        <div class="video-player">
+            <div class="video-container">
+                <video id="remoteVideo" autoplay playsinline controls></video>
+                
+                <div class="video-overlay">
+                    <div class="live-badge" id="liveBadge" style="display: none;">
+                        <span class="live-indicator"></span>
+                        LIVE
+                    </div>
+                    <div class="viewer-count" id="viewerCount">
+                        👥 0 watching
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stream-info">
+                <h2 class="stream-title" id="streamTitle">Live Stream</h2>
+                <div class="streamer-name" id="streamerName">Streamer</div>
+                
+                <div id="statusMessage" class="status-message waiting">
+                    ⏳ Waiting for stream to start...
+                </div>
+                
+                <div class="controls">
+                    <select id="qualitySelector" class="quality-selector" onchange="changeQuality(this.value)">
+                        <option value="auto">Auto Quality</option>
+                        <option value="720">720p</option>
+                        <option value="480">480p</option>
+                        <option value="360">360p</option>
+                    </select>
+                    <button class="btn-primary" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+                </div>
+                
+                <div class="stats" id="stats" style="display: none;">
+                    <div>Stream Statistics</div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">Bitrate</div>
+                            <div class="stat-value" id="bitrate">0 kbps</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Resolution</div>
+                            <div class="stat-value" id="resolution">N/A</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Latency</div>
+                            <div class="stat-value" id="latency">0 ms</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="viewer.js"></script>
+</body>
+</html>
