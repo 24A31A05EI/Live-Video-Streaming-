@@ -47,6 +47,8 @@ WEBRTC-LIVE-STREAM/
 ├── package-lock.json
 ├── readme.md
 └── server.js
+
+
 ⚙ Installation & Setup
 1️⃣ Clone Repository
 Bash
@@ -78,26 +80,34 @@ Receive Offer
 Create Answer
 Send Answer back
 WebRTC connection becomes connected
+
+
 👥 Team Roles
+
 🔵 WebRTC Engineer
 Implement PeerConnection
 Handle Offer/Answer
 ICE Candidates
 Media Streaming Logic
+
 🌐 Backend Developer
 Setup Node.js server
 Implement Socket.io signaling
 Manage live room
 Handle viewer count
+
 🎨 Frontend Developer
 Design UI (Home, Live, Viewer pages)
 Responsive layout
 Video + Chat sections
+
 💬 Feature Developer
 Real-time Chat
 LIVE Badge
 Username display
 Viewer counter
+
+
 ✅ Final Deliverables
 ✔ Streamer can go live
 ✔ Viewers can watch live
@@ -105,6 +115,8 @@ Viewer counter
 ✔ Chat working
 ✔ Viewer count updating
 ✔ No major console errors
+
+
 🚀 Future Improvements
 Authentication System
 Multi-room support
@@ -112,5 +124,7 @@ Recording & Playback
 Screen sharing
 Deployment on AWS / Render
 Scalable SFU (Mediasoup)
+
+
 📜 License
 This project is for educational purposes.
