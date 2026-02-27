@@ -1,0 +1,48 @@
+console.log("💬 chat.js loading...");
+
+function setupChat() {
+    const socket = window.socket;
+    
+    socket.on("chat-message", (data) => {
+        console.log("💬 Chat message received from:", data.from);
+        
+        const chatMessages = document.getElementById("chatMessages");
+        if (!chatMessages) {
+            console.error("❌ chatMessages container not found");
+            return;
+        }
+        
+        const messageEl = document.createElement("div");
+        messageEl.className = "message";
+        
+        // Get username from data or use default
+        const username = data.username || 'User';
+        const shortId = data.from.substring(0, 6);
+        
+        const usernameEl = document.createElement("span");
+        usernameEl.className = "username";
+        usernameEl.textContent = username + " (" + shortId + ")";
+        
+        const textEl = document.createElement("span");
+        textEl.className = "text";
+        textEl.textContent = data.message;
+        
+        messageEl.appendChild(usernameEl);
+        messageEl.appendChild(document.createElement("br"));
+        messageEl.appendChild(textEl);
+        
+        chatMessages.appendChild(messageEl);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        
+        console.log("✅ Message added to chat");
+    });
+}
+
+setTimeout(() => {
+    if (typeof window.socket !== 'undefined') {
+        setupChat();
+        console.log("✅ Chat setup complete");
+    }
+}, 1000);
+
+console.log("✅ chat.js loaded");
