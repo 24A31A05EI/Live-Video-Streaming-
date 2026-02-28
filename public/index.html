@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home - LiveStream</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <h1>📹 LiveStream</h1>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="watch.html" target="_blank">Watch</a>
+                <span id="welcomeUser">Welcome</span>
+                <button onclick="logout()" class="logout-btn" title="Logout">🚪 Logout</button>
+                <span id="themeToggle" title="Toggle theme">🌗</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="home-container">
+        <div class="background-shapes">
+            <span style="left:10%; animation-delay:0s;"></span>
+            <span style="left:30%; animation-delay:2s;"></span>
+            <span style="left:50%; animation-delay:4s;"></span>
+            <span style="left:70%; animation-delay:1s;"></span>
+            <span style="left:90%; animation-delay:3s;"></span>
+        </div>
+        <div class="hero-section">
+            <h1>Welcome to LiveStream</h1>
+            <p>Start broadcasting or join someone else's live stream. It's easy!</p>
+        </div>
+        <div class="action-cards">
+            <div class="card" onclick="location.href='live.html'">
+                <div class="card-icon">🎬</div>
+                <h3>Go Live</h3>
+                <p>Broadcast your camera to viewers.</p>
+            </div>
+            <div class="card" onclick="location.href='watch.html'">
+                <div class="card-icon">👀</div>
+                <h3>Watch</h3>
+                <p>Join a live stream and chat with others.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- scripts -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>console.log("📦 socket.io.js loaded");</script>
+    <script src="/js/auth.js"></script>
+    <script>console.log("👤 auth.js loaded");</script>
+    <script src="/js/socket.js"></script>
+    <script>console.log("🔌 socket.js loaded");</script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check authentication first
+            checkAndDisplayUser();
+
+            // theme toggle logic same as watch/live
+            const themeToggle = document.getElementById('themeToggle');
+            const currentTheme = localStorage.getItem('theme') || 'dark';
+            if (currentTheme === 'light') {
+                document.body.classList.add('light');
+                themeToggle.textContent = '🌞';
+            } else {
+                themeToggle.textContent = '🌙';
+            }
+            themeToggle.addEventListener('click', () => {
+                const isLight = document.body.classList.toggle('light');
+                localStorage.setItem('theme', isLight ? 'light' : 'dark');
+                themeToggle.textContent = isLight ? '🌞' : '🌙';
+            });
+
+            // card tilt effect
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width/2;
+                    const y = e.clientY - rect.top - rect.height/2;
+                    card.style.transform = `perspective(1000px) rotateY(${x/20}deg) rotateX(${ -y/20}deg) scale(1.08)`;
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = '';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
