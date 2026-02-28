@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Live - LiveStream</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav-links span {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            color: white;
+        }
+
+        .live-container {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            width: 100%;
+        }
+
+        .video-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .video-wrapper {
+            position: relative;
+            background: #000;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%;
+        }
+
+        video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: #000;
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            right: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .live-badge {
+            background: #ff4444;
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: none;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .viewer-count {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            pointer-events: auto;
+        }
+
+        .control-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .control-panel h3 {
+            color: white;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-direction: column;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            background: #999;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .share-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 1.5rem;
+        }
+
+        .share-panel h3 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .share-url {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 10px;
+            color: white;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            word-break: break-all;
+            font-size: 0.9rem;
+        }
+
+        .share-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .share-btn {
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .share-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .status-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 1.5rem;
+        }
+
+        .status-box h3 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .status-icon {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #999;
+        }
+
+        .status-icon.active {
+            background: #4CAF50;
+        }
+
+        .status-text {
+            color: white;
+        }
+
+        .chat-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            height: 400px;
+        }
+
+        .chat-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-header h3 {
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .message {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+        }
+
+        .message .username {
+            color: #4CAF50;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .message .text {
+            color: white;
+            margin-top: 0.3rem;
+        }
+
+        .chat-input {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+        }
+
+        .chat-input input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .chat-input input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .chat-input button {
+            padding: 0.8rem 1.5rem;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .chat-input button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <h1>📹 LiveStream</h1>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" target="_blank">Home</a>
+                <a href="watch.html" target="_blank">Watch</a>
+                <span id="welcomeUser">Welcome</span>
+                <button onclick="logout()" class="logout-btn" title="Logout">🚪 Logout</button>
+                <span id="themeToggle" title="Toggle theme">🌗</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="live-container">
+        <div class="video-section">
+            <div class="video-wrapper">
+                <div class="video-container">
+                    <video id="localVideo" autoplay muted playsinline></video>
+                    <div class="video-overlay">
+                        <span class="live-badge" id="liveBadge">🔴 LIVE</span>
+                        <span class="viewer-count" id="viewerCount">0 viewers</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-section">
+                <div class="chat-header">
+                    <h3>💬 Chat</h3>
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message">
+                        <span class="username">System</span>
+                        <span class="text">Welcome!</span>
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="messageInput" placeholder="Message...">
+                    <button onclick="sendChatMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="control-panel">
+                <h3>📡 Controls</h3>
+                
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-label">Duration</div>
+                        <div class="stat-value" id="streamDuration">00:00</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Viewers</div>
+                        <div class="stat-value" id="streamViewers">0</div>
+                    </div>
+                </div>
+
+                <div class="control-buttons">
+                    <button class="btn btn-primary" id="startBtn" onclick="startStream()">▶ Go Live</button>
+                    <button class="btn btn-primary" id="stopBtn" onclick="stopStream()" disabled>⏹ Stop</button>
+                </div>
+            </div>
+
+            <div class="share-panel">
+                <h3>📤 Share</h3>
+                <div class="share-url" id="shareUrl">http://localhost:3000/watch.html</div>
+                <div class="share-buttons">
+                    <button class="share-btn" onclick="copyStreamLink()">📋 Copy</button>
+                    <button class="share-btn" onclick="shareStreamWhatsApp()">💬 WhatsApp</button>
+                    <button class="share-btn" onclick="shareStreamEmail()">📧 Email</button>
+                </div>
+            </div>
+
+            <div class="status-box">
+                <h3>⚡ Status</h3>
+                <div class="status-item">
+                    <div class="status-icon" id="audioStatus"></div>
+                    <span class="status-text" id="audioStatusText">Audio</span>
+                </div>
+                <div class="status-item">
+                    <div class="status-icon" id="videoStatus"></div>
+                    <span class="status-text" id="videoStatusText">Video</span>
+                </div>
+                <div class="status-item">
+                    <div class="status-icon" id="connectionStatus"></div>
+                    <span class="status-text" id="connectionStatusText">Connection</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CRITICAL: Socket.IO script FIRST -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>console.log("📦 socket.io.js loaded");</script>
+    
+    <!-- Socket initialization -->
+    <script src="/js/socket.js"></script>
+    <script>console.log("🔌 socket.js loaded");</script>
+    
+    <!-- Auth -->
+    <script src="/js/auth.js"></script>
+    <script>console.log("👤 auth.js loaded");</script>
+    
+    <!-- Inline functions -->
+    <script>
+        console.log("📄 live.html inline script starting");
+        
+        function sendChatMessage() {
+            const input = document.getElementById("messageInput");
+            const msg = input.value.trim();
+            
+            if (msg && window.socket) {
+                window.socket.emit("chat-message", msg);
+                input.value = "";
+            }
+        }
+        
+        function copyStreamLink() {
+            const url = document.getElementById("shareUrl").textContent;
+            navigator.clipboard.writeText(url).then(() => {
+                alert("✅ LInk copied!");
+            }).catch(() => {
+                alert("❌ Error");
+            });
+        }
+        
+        function shareStreamWhatsApp() {
+            const url = document.getElementById("shareUrl").textContent;
+            const text = "🎥 Join my live stream! " + url;
+            const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent(text);
+            window.open(whatsappUrl, '_blank');
+        }
+        
+        function shareStreamEmail() {
+            const url = document.getElementById("shareUrl").textContent;
+            const subject = "Join my LiveStream!";
+            const body = "Check out my live stream: " + url;
+            window.location.href = "mailto:?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAndDisplayUser();
+            
+            const messageInput = document.getElementById("messageInput");
+            if (messageInput) {
+                messageInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') sendChatMessage();
+                });
+            }
+
+            // theme toggle logic
+            const themeToggle = document.getElementById('themeToggle');
+            const currentTheme = localStorage.getItem('theme') || 'dark';
+            if (currentTheme === 'light') {
+                document.body.classList.add('light');
+                themeToggle.textContent = '🌞';
+            } else {
+                themeToggle.textContent = '🌙';
+            }
+            themeToggle.addEventListener('click', () => {
+                const isLight = document.body.classList.toggle('light');
+                localStorage.setItem('theme', isLight ? 'light' : 'dark');
+                themeToggle.textContent = isLight ? '🌞' : '🌙';
+            });
+        });
+    </script>
+    
+    <!-- Streamer logic -->
+    <script src="/js/streamer.js"></script>
+    <script>console.log("🎬 streamer.js loaded");</script>
+    
+    <!-- Chat logic -->
+    <script src="/js/chat.js"></script>
+    <script>console.log("💬 chat.js loaded");</script>
+    
+    <script>console.log("✅ ALL SCRIPTS LOADED");</script>
+</body>
+</html>
