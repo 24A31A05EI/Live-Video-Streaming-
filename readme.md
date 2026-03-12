@@ -1,30 +1,44 @@
-🚀 Live Video Streaming Website
-A real-time WebRTC-based Live Streaming Platform built using Node.js, Socket.io, and WebRTC.
-This project allows one streamer to broadcast live video & audio to multiple viewers with real-time chat support.
-📌 Features
-🎥 One Streamer → Multiple Viewers (Up to 10 viewers)
+🚀 Live Video Streaming Platform
+� � � � �
+A real-time WebRTC-based Live Streaming Platform built using Node.js, Express.js, Socket.io, and WebRTC.
+This platform allows one streamer to broadcast live video and audio to multiple viewers with real-time chat support.
+🌐 Live Demo
+🔗 Try the Application Here
+https://live-video-streaming-8.onrender.com⁠�
+📸 Project Screenshots
+🏠 Home Page
+(Add screenshot here)
+🔴 Live Streaming Page
+(Add screenshot here)
+👀 Viewer Page
+(Add screenshot here)
+(You can upload screenshots to GitHub and paste the image link here)
+Example:
+Md
+Copy code
+![Home Page](images/home.png)
+✨ Features
+🎥 One Streamer → Multiple Viewers
 🔊 Live Audio & Video using WebRTC
-💬 Real-time Chat System (Socket.io)
+💬 Real-time Chat System
 👀 Live Viewer Count
 🔴 LIVE Badge Indicator
 🖥 Clean & Responsive UI
-⚡ Fast Real-Time Signaling Server
+⚡ Fast WebSocket Signaling
 🏗 Tech Stack
-Frontend
-Backend
-Real-Time
+🎨 Frontend
 HTML
-Node.js
-WebRTC
 CSS
-Express.js
-Socket.io
 JavaScript
-
-
+⚙ Backend
+Node.js
+Express.js
+🔗 Real-Time Communication
+WebRTC
+Socket.io
 📂 Project Structure
+Id="28gzhv"
 Copy code
-
 WEBRTC-LIVE-STREAM/
 │
 ├── node_modules/
@@ -48,69 +62,65 @@ WEBRTC-LIVE-STREAM/
 ├── readme.md
 └── server.js
 ⚙ Installation & Setup
-1️⃣ Clone Repository
-Bash
+1️⃣ Clone the Repository
+Bash id="5aq5hc"
 Copy code
 git clone https://github.com/24A31A05EI/Live-Video-Streaming.git
 cd Live-Video-Streaming
 2️⃣ Install Dependencies
-Bash
+Bash id="9wbgkn"
 Copy code
 npm install
-3️⃣ Run Server
-Bash
+3️⃣ Run the Server
+Bash id="04f29n"
 Copy code
 node server.js
-Server will run on:
+Server will start at:
+Id="sv3h9l"
 Copy code
-
 http://localhost:3000
 🔄 How It Works
-🔹 Streamer Flow
+🎥 Streamer Workflow
 Access camera using getUserMedia
 Create RTCPeerConnection
-Generate Offer
-Send Offer via Socket.io
+Generate WebRTC Offer
+Send offer using Socket.io
 Receive Answer from viewer
-Connection established 🎉
-🔹 Viewer Flow
+Peer connection established 🎉
+👀 Viewer Workflow
 Receive Offer
 Create Answer
-Send Answer back
-WebRTC connection becomes connected
+Send Answer via Socket.io
+WebRTC connection becomes active
 👥 Team Roles
 🔵 WebRTC Engineer
-Implement PeerConnection
-Handle Offer/Answer
-ICE Candidates
-Media Streaming Logic
+Implement RTCPeerConnection
+Manage Offer/Answer exchange
+Handle ICE Candidates
+Media streaming logic
 🌐 Backend Developer
-Setup Node.js server
-Implement Socket.io signaling
-Manage live room
-Handle viewer count
+Node.js server setup
+Socket.io signaling server
+Manage live rooms
+Viewer count management
 🎨 Frontend Developer
-Design UI (Home, Live, Viewer pages)
+UI design
 Responsive layout
-Video + Chat sections
+Video player integration
+Chat interface
 💬 Feature Developer
-Real-time Chat
-LIVE Badge
+Real-time chat
+LIVE badge
 Username display
 Viewer counter
-✅ Final Deliverables
-✔ Streamer can go live
-✔ Viewers can watch live
-✔ Audio working
-✔ Chat working
-✔ Viewer count updating
-✔ No major console errors
 🚀 Future Improvements
-Authentication System
-Multi-room support
-Recording & Playback
-Screen sharing
-Deployment on AWS / Render
-Scalable SFU (Mediasoup)
+🔐 Authentication system
+🏠 Multi-room streaming
+📹 Recording & playback
+🖥 Screen sharing
+☁ Cloud deployment
+📡 Scalable SFU (Mediasoup)
+⭐ Support
+If you like this project, please give it a star ⭐ on GitHub.
 📜 License
-This project is for educational purposes.
+This project is developed for educational purposes.
