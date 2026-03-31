@@ -138,10 +138,12 @@ http://localhost:3000
 
 | Name | Role  | GitHub |
 |---|---|---|
-| M. Ratna Sahithi | Full Stack Developer  | [GitHub](https://github.com/24A31A05EI) |
-| M. Veera Venkata Manikanta | WebRTC Engineer | [GitHub](#) |
-| P. Mahesh | Backend Developer  | [GitHub](#) |
-| K. Durga Prasad | Frontend Developer | [GitHub](#) |
+| M. Ratna Sahithi | Full Stack Developer  | [
+linkdin](https://www.linkedin.com/in/mondi-ratna-sahithi-5219b232a?utm_source=share_via&utm_content=profile&utm_medium=member_android ) |
+| M. Veera Venkata Manikanta | WebRTC Engineer | [Linkdin](#) |
+| P. Mahesh | Backend Developer  | [
+linkdin](https://www.linkedin.com/in/mahesh-pithani-4658303a0?utm_source=share_via&utm_content=profile&utm_medium=member_android) |
+| K. Durga Prasad | Frontend Developer | [Linkdin](#) |
 
 ---
 
